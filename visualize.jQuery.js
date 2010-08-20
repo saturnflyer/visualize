@@ -10,7 +10,7 @@
 $.fn.visualize = function(options, container){
 	return $(this).each(function(){
 		//configuration
-		var o = $.extend({
+		var o = $.extend(true, {
 			type: 'bar', //also available: area, pie, line
 			width: $(this).width(), //height of canvas - defaults to table height
 			height: $(this).height(), //height of canvas - defaults to table height
@@ -28,7 +28,8 @@ $.fn.visualize = function(options, container){
 			lineWeight: 4, //for line and area - stroke weight
 			barGroupMargin: 10,
 			barMargin: 1, //space around bars in bar chart (added to both sides of bar)
-			yLabelInterval: 30 //distance between y labels
+			yLabelInterval: 30, //distance between y labels
+			barMaxValueAddition: 0
 		},options);
 		
 		//reset width, height to numbers
@@ -89,7 +90,7 @@ $.fn.visualize = function(options, container){
 						var topValue = 0;
 						var allData = this.allData().join(',').split(',');
 						$(allData).each(function(){
-							if(parseFloat(this,10)>topValue) topValue = parseFloat(this);
+							if(parseFloat(this,10)>topValue) topValue = Math.ceil(parseFloat(this)) + o.barMaxValueAddition;
 						});
 						return topValue;
 				},
@@ -223,7 +224,7 @@ $.fn.visualize = function(options, container){
 				        		.css({left: labelx, top: labely})
 				        		.append(labeltext);	
 				        labeltext
-				        	.css('font-size', radius / 8)		
+				        	.css('font-size', radius / 6)		
 				        	.css('margin-'+leftRight, -labeltext.width()/2)
 				        	.css('margin-'+topBottom, -labeltext.outerHeight()/2);
 				        	
@@ -380,7 +381,7 @@ $.fn.visualize = function(options, container){
 		};
 	
 		//create new canvas, set w&h attrs (not inline styles)
-		var canvasNode = document.createElement("canvas"); 
+		var canvasNode = document.createElement("canvas");
 		canvasNode.setAttribute('height',o.height);
 		canvasNode.setAttribute('width',o.width);
 		var canvas = $(canvasNode);
@@ -459,4 +460,5 @@ $.fn.visualize = function(options, container){
 	}).next(); //returns canvas(es)
 };
 })(jQuery);
+
 
